@@ -1,0 +1,165 @@
+Route::prefix('admin')->middleware('auth:admin')->group(function(){
+    Route::get('users',[UserController::class,'index'])->name('admin.users');
+});
+
+   public function destroy($id){
+        $user = User::findorFail($id);
+        $user->delete();
+        return back()->with('success','User Deleted Successfully');
+    }
+
+
+     $profiles = Profile::with('user')->where('status','approved')->latest()->get();
+        return view('user.home',compact('profiles'));
+
+        
+        public function contactSubmit(Request $request){
+        $request->validate([
+            'name'=>'required',
+            'email' =>'required',
+            'phone'=>'required|min:10',
+            'message'=>'required|min:10'
+        ]);
+        
+        $data = [
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'phone'=>$request->phone,
+            'message'=>$request->message
+        ];
+        Mail::send('user.contact-us',$data,function($mail) use($data){
+            $mail->to('info@gharbasaao.com')
+            ->subject('New Query Message');
+
+            $mail->from($data['email'],$data['name']);
+        });
+        return back()->with('success','Message Sent Successfully');
+    }
+
+
+    @if($profiles)
+
+
+<div class="profile-status-card">
+
+    @if($profiles->status == 'pending')
+
+    <div class="status-box pending">
+        ⏳ Your profile is under review
+    </div>
+
+    @elseif($profiles->status == 'approved')
+
+    <div class="status-box approved">
+        ✅ Your profile is approved
+    </div>
+
+    @elseif($profiles->status == 'rejected')
+
+    <div class="status-box rejected">
+        ❌ Your profile was rejected. Please update your details.
+    </div>
+
+    @endif
+
+</div>
+@endif
+
+ if($request->hasFile('profile_image')){
+            if($profile && $profile->profile_image){
+                $oldPath = public_path('uploads/images/'.$profile->profile->image);
+                if(File::exists($oldPath)){
+                    File::delete($oldPath);
+                }
+            }
+
+
+          <div class="container-fluid detail-page">
+    <div class="row">
+
+
+        <div class="col-lg-7 p-0">
+            <div class="image-section">
+                <img src="{{ asset('uploads/images/'.$profile->profile_image) }}" id="mainImage" class="main-img">
+
+                <div class="thumbs">
+                    @foreach($profile->images ?? [] as $img)
+                    <img src="{{ asset('uploads/images/'.$img->image) }}" class="thumb" onclick="changeImg(this)">
+                @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT DETAILS -->
+         <!-- RIGHT CONTENT -->
+        <div class="col-lg-5">
+            <div class="content-wrapper">
+
+                <!-- TITLE SECTION -->
+                <div class="section">
+                    <h2>{{ $profile->user->name }}</h2>
+                    <p class="location">📍 {{ $profile->city }}</p>
+                </div>
+
+                 <div class="section">
+                    <h2 class="price">Age:{{ $profile->age }}</h2>
+                </div>
+
+                
+                <div class="section profile">
+                    <p><strong>Qualifications:</strong> {{ $profile->education }}</p>
+                </div>
+                <!-- DESCRIPTION -->
+               <div class="section">
+                   <h4>Description</h4>
+                   <p>{{ $profile->about }}</p>
+               </div>
+
+
+                <!-- BUTTON -->
+                <div class="section">
+                    <a target="_blank"
+                       href="https://wa.me/91{{ $profile->phone }}?text=Hi { $profile->user->name }}, I'm Interested on this Profile"
+                       class="whatsapp-btn">
+                       Contact on WhatsApp
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@foreach($brides->chunk(5) as $chunkIndex => $chunk)
+    <div class="carousel-item {{ $chunkIndex == 0 ? 'active' : '' }}">
+        
+        <div class="d-flex justify-content-end gap-3 custom-flex">
+
+            @foreach($chunk as $profile)
+                <div class="custom-item">
+                    <x-profile-card
+                        image="{{ $profile->profile_image ? asset('uploads/images/' . $profile->profile_image) : asset('images/default-ma.png') }}"
+                        name="{{$profile->user->name}}" />
+                </div>
+            @endforeach
+
+        </div>
+
+    </div>
+@endforeach-------------------.custom-item {
+    width: 20%;
+}
+
+/* ✅ ONLY mobile view */
+@media (max-width: 576px) {
+    .custom-flex {
+        display: block !important;   /* flex hata diya */
+    }
+
+    .custom-item {
+        width: 100% !important;      /* full width */
+        margin-bottom: 10px;
+    }
+}

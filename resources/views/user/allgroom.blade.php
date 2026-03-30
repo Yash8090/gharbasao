@@ -59,9 +59,6 @@
                 </div>
 
 
-
-                <!-- CITY -->
-
                 <div class="col-md-2">
                     <label class="form-label">Caste</label>
                     <select name="caste[]" class="form-select">
@@ -79,13 +76,10 @@
                 <div class="col-md-2">
                     <label class="form-label">Martial Status</label>
                     <select name="marital[]" class="form-select">
-                        <option value="">Select Marital Status</option>
-                        
-                        <option value="">Married</option>
-                        <option value="">Divorce</option>
-                        <option value="">Widow</option>
-                        <option value="">Never Married</option>
-                        
+                        <option value="">Marital Status</option>
+                        @foreach($martials as $marital)
+                        <option value="{{$marital}}"{{in_array($marital,request('marital',[])) ? 'selected' : ''}}>{{$marital}}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -123,7 +117,7 @@
                 <x-profile-card
                     image="{{ $profile->profile_image ? asset('uploads/images/'.$profile->profile_image) : asset('images/default-ma.png') }}"
                     name="{{$profile->user->name}}" age="{{$profile->age}}" city="{{$profile->city}}"
-                    state="{{$profile->state}}" education="{{$profile->education}}" about="{{$profile->about}}" />
+                    state="{{$profile->state}}" education="{{$profile->education}}" about="{{$profile->about}}" :profile="$profile"/>
 
             </div>
             @empty

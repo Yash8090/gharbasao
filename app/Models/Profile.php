@@ -20,7 +20,7 @@ class Profile extends Model
         'income',
         'father',
         'interested_to',
-        'marital_status',
+       'marital_status',
         'age',
         'address',
         'profile_image',

@@ -90,7 +90,11 @@ class HomeController extends Controller
     $ages = Profile::whereHas('user',function($q){
         $q->where('profile_for','groom');
     })->distinct()->pluck('age');
-    return view('user.allgroom',compact('grooms','cities','castes','ages'));
+
+    $martials = Profile::whereHas('user',function($q){
+        $q->where('profile_for','groom');
+    })->distinct()->pluck('marital_status');
+    return view('user.allgroom',compact('grooms','cities','castes','ages','martials'));
 }
 
     public function brideindex(Request $request){

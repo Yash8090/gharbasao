@@ -53,7 +53,7 @@ Route::prefix('admin')->group(function(){
     Route::get('users/delete/{id}',[UserController::class,'destroy'])->name('adminUserDelete');
     Route::get('users/status/{id}',[UserController::class,'status'])->name('adminUserStatus');
     Route::get('user/edit-profile/{id}',[ProfileController::class,'users'])->name('editUser');
-    Route::put('user/edit-profile/{id}',[ProfileController::class,'updateuser'])->name('updateUser');
+    Route::post('user/edit-profile/{id}',[UserController::class,'adminAddUser'])->name('updateUser');
 
     Route::get('user/profile',[ProfileController::class,'userprofile'])->name('showUserProfile');
     Route::get('user/profile-approve/{id}',[ProfileController::class,'approveuser'])->name('approveUser');

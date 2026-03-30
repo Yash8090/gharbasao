@@ -37,62 +37,72 @@ class UserController extends Controller
             return view('admin.register');
     }
 
-    public function adminAdduser(Request $request){
-        $pass = $request->name.'121';
+    public function adminAdduser(Request $request, $id = null){
+
         $request->validate([
             'profile_for'=>'required',
             'name'=>'required',
             'email'=>'required',
-            'phone'=>'required'
+            'phone'=>'required',
+              'gender'=>'required',
+              'marital_status'=>'required'
         ]);
-        $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'phone'=>$request->phone,
-            'password'=>hash::make($pass),
-        ]);
+         
 
         
-        $dob = $request->year.'-'.$request->month.'-'.$request->day;
-        $request->validate([
-            'gender'=>'required',
-            'date'=>'required',
-            'month'=>'required',
-            'year'=>'required',
-            'status'=>'required'
-        ]);
-        $profile = Profile::create([
-              'user_id'=>$user->id,
-        'gender'=>$request->gender,
-        'dob'=>$dob,
-        'height'=>$request->height,
-        'religion'=>$request->religion,
-        'marital_status'=>$request->status,
-        'caste'=>$request->caste,
-        'education'=>$request->education,
-        'profession'=>$request->profession,
-        'age'=>$request->age,
-        'income'=>$request->income,
-        'state'=>$request->state,
-        'interested_to'=>$request->interested,
-        'father'=>$request->fathername,
-        'city'=>$request->city,
-        'address'=>$request->address,
-        'about'=>$request->about,
-        'status'=>'approved',
-        ]);
+        if($id){
+            $profile = Profile::with('user')->findorFail($id);
+            $user = $profile->user;
+            }else{
+        $user = new User();
+        $profile = new Profile();
+        $pass = $request->name.'121';
+        $user->password = Hash::make($pass);
+    }   
+        // user create and edit
+        $user->profile_for = $request->profile_for;
+         $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+    $user->save();
 
-        for($i=1;$i<=4;$i++){
-            if($request->hasFile('image'.$i)){
-                $file = $request->file('image'.$i);
-                $imageName =  time().'_'.$i.'.'.$file->getClientOriginalExtension();
-                $file->move(public_path('uploads/images'),$imageName);
-                $profile->{'image'.$i} = $imageName;
-            }
-            $profile->save();
+    // ✅ PROFILE SAVE (both create + edit)
+    $dob = $request->year.'-'.$request->month.'-'.$request->day;
+    $profile->user_id = $user->id;
+    $profile->gender = $request->gender;
+    $profile->dob = $dob;
+    $profile->height = $request->height;
+    $profile->religion = $request->religion;
+    $profile->marital_status = $request->marital_status;
+    $profile->caste = $request->caste;
+    $profile->education = $request->education;
+    $profile->profession = $request->profession;
+    $profile->age = $request->age;
+    $profile->income = $request->income;
+    $profile->state = $request->state;
+    $profile->interested_to = $request->interested;
+    $profile->father = $request->fathername;
+    $profile->city = $request->city;
+    $profile->address = $request->address;
+    $profile->about = $request->about;
+    $profile->status = 'approved';
+
+    // ✅ IMAGE UPLOAD
+    for($i=1;$i<=4;$i++){
+        if($request->hasFile('image'.$i)){
+            $file = $request->file('image'.$i);
+            $imageName = time().'_'.$i.'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/images'), $imageName);
+
+            $profile->{'image'.$i} = $imageName;
         }
-        return back()->with('success','User Created Successfully');
     }
 
-        
+    $profile->save();
+
+    return back()->with('success', $id ? 'User Updated Successfully' : 'User Created Successfully');
+
 }
+    }
+
+

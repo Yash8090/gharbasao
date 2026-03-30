@@ -75,7 +75,7 @@
 
                 <td>
 
-                    <a href="{{route('editUser',$user->id)}}" class="btn btn-sm btn-info">View</a>
+                    <a href="{{route('editUser',$user->profile->id)}}" class="btn btn-sm btn-info">View</a>
 
                     <a href="{{route('adminUserStatus',$user->id)}}" class="btn btn-sm btn-warning">
                         @if($user->status == 1)

@@ -1,3 +1,4 @@
+@props(['profile'])
 <style>
 /* PROFILE CARD */
 
@@ -80,6 +81,7 @@
 }
 
 </style>
+
 <div class="">
 
     <div class="profile-card">
@@ -88,13 +90,11 @@
 
             <img src="{{ $image }}" alt="profile">
 
-        <div  class="view-btn">View Details
-
-        </div>
+        
 
         <div class="profile-info">
 
-            <a href="#" ><h5 class="profile-name">{{ $name }}</h5></a>
+            <a href="{{route('detailProfile',$profile->id)}}" ><h5 class="profile-name">{{ $name }}</h5></a>
 
 
         </div>

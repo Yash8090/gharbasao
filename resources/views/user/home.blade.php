@@ -857,9 +857,9 @@
 
                         @foreach($chunk as $profile)
                         <div class="card-box">
-                            <x-profile-card
+                            <x-profile-card 
                                 image="{{ $profile->profile_image ? asset('uploads/images/'.$profile->profile_image) : asset('images/default-ma.png') }}"
-                                name="{{$profile->user->name}}"/>
+                                name="{{$profile->user->name}}" :profile="$profile" />
                         </div>
                         @endforeach
 
@@ -905,7 +905,7 @@
                         <div class="custom-item">
                             <x-profile-card
                                 image="{{ $profile->profile_image ? asset('uploads/images/'.$profile->profile_image) : asset('images/default-ma.png') }}"
-                                name="{{$profile->user->name}}"  />
+                                name="{{$profile->user->name}}" :profile="$profile" />
                         </div>
                         @endforeach
 
